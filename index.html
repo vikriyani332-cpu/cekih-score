@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#c9a84c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Score Cekih">
+  <meta name="description" content="Score Cekih — Aplikasi scoring kartu premium oleh Sadewa Corp">
+  <title>Score Cekih — Sadewa Corp</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="joker.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="joker.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- BATIK OVERLAY -->
+<div class="batik-overlay"></div>
+
+<!-- STAR OVERLAY (untuk animasi bintang jatuh) -->
+<div id="star-overlay"></div>
+
+<!-- ============================================================ -->
+<!-- LOADING SCREEN -->
+<!-- ============================================================ -->
+<div id="loading-screen">
+  <div class="loading-logo-wrap">
+    <div class="loading-glow-ring"></div>
+    <div class="loading-glow-ring"></div>
+    <div class="loading-glow-ring"></div>
+    <img src="joker.png" alt="Joker Logo" class="loading-logo" onerror="this.style.display='none'">
+  </div>
+  <div>
+    <div class="loading-title">Score Cekih</div>
+    <div class="loading-subtitle">by Sadewa Corp</div>
+  </div>
+  <div class="loading-bar-wrap">
+    <div class="loading-bar" id="loading-bar"></div>
+  </div>
+  <div class="loading-status" id="loading-status">Memuat aplikasi...</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MAIN APP -->
+<!-- ============================================================ -->
+<div id="app">
+
+  <!-- ===== HEADER ===== -->
+  <header id="app-header" style="display:none;">
+    <div class="header-logo">
+      <img src="joker.png" alt="Logo" onerror="this.style.display='none'">
+      <div class="header-logo-text">
+        <div class="header-title">SCORE CEKIH</div>
+        <div class="header-subtitle">by Sadewa Corp</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="btn-theme" title="Toggle Theme">☀️</button>
+      <button class="header-btn" id="btn-fullscreen" title="Fullscreen">⛶</button>
+      <button class="header-btn" id="btn-screenshot" title="Screenshot">📸</button>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- SETUP SCREEN -->
+  <!-- ============================================================ -->
+  <div id="setup-screen" class="screen">
+    <div class="setup-logo-wrap">
+      <img src="joker.png" alt="Logo" class="setup-logo" onerror="this.style.display='none'">
+      <div class="setup-logo-title">SCORE CEKIH</div>
+      <div class="setup-logo-sub">Premium Card Score System · V7 Final</div>
+    </div>
+
+    <div class="setup-card">
+      <div class="section-title">👥 Nama Pemain</div>
+      <div class="input-group">
+        <label class="input-label">Pemain A</label>
+        <input class="input-field" type="text" id="player-a-name" placeholder="Masukkan nama pemain A" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Pemain B</label>
+        <input class="input-field" type="text" id="player-b-name" placeholder="Masukkan nama pemain B" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Pemain C</label>
+        <input class="input-field" type="text" id="player-c-name" placeholder="Masukkan nama pemain C" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label class="input-label">Pemain D</label>
+        <input class="input-field" type="text" id="player-d-name" placeholder="Masukkan nama pemain D" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="setup-card">
+      <div class="section-title">🎯 Target Kemenangan</div>
+      <div class="target-options">
+        <button class="target-btn" data-value="500">500</button>
+        <button class="target-btn" data-value="750">750</button>
+        <button class="target-btn active" data-value="1000">1000</button>
+        <button class="target-btn" data-value="1500">1500</button>
+      </div>
+      <div id="target-custom" style="display:none; margin-top:10px;">
+        <input class="input-field" type="number" id="target-custom-input" placeholder="Masukkan target custom..." min="1" style="text-align:center;">
+      </div>
+      <button class="target-btn" data-value="custom" id="btn-target-custom" style="width:100%;margin-top:8px;">✏️ Custom</button>
+    </div>
+
+    <button class="btn-primary" id="btn-start-game">▶ MULAI PERMAINAN</button>
+
+    <div style="text-align:center;margin-top:20px;padding-bottom:24px;">
+      <div style="font-size:10px;letter-spacing:2px;color:var(--silver);text-transform:uppercase;">Score Cekih V7 Final · Sadewa Corp</div>
+      <div style="font-size:10px;color:rgba(168,168,179,0.4);margin-top:4px;">PWA · Offline Ready · Mobile First</div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- GAME SCREEN -->
+  <!-- ============================================================ -->
+  <div id="game-screen" class="screen">
+
+    <!-- Round Info Bar -->
+    <div class="round-info-bar">
+      <div class="round-badge">
+        <div class="badge-item">
+          <span class="badge-label">Ronde</span>
+          <span class="badge-value" id="display-ronde">1</span>
+        </div>
+        <div style="width:1px;height:30px;background:var(--border-gold);"></div>
+        <div class="badge-item">
+          <span class="badge-label">Puteran</span>
+          <span class="badge-value" id="display-puteran">0</span>
+        </div>
+      </div>
+      <div class="round-target" id="display-target">Target: <span>1000</span></div>
+    </div>
+
+    <!-- Win Banner Area -->
+    <div id="win-banner-area"></div>
+
+    <!-- Player Cards -->
+    <div class="players-grid" id="players-grid"></div>
+
+    <!-- AI Commentator -->
+    <div style="padding:8px 12px 0;">
+      <div class="ai-comment-label">🤖 AI Komentator</div>
+      <div class="ai-comment-box">
+        <span id="ai-comment-text">Selamat datang! Mulai permainan untuk melihat komentar AI.</span>
+      </div>
+    </div>
+
+    <!-- Burn Candidates -->
+    <div id="burn-candidates-box" class="hidden" style="margin:8px 12px 0;"></div>
+
+    <!-- New Round Prompt (hidden until win) -->
+    <div id="btn-new-round-prompt" class="hidden" style="padding:0 12px;margin-top:8px;">
+      <button class="btn-primary" id="btn-new-round">🔄 MULAI RONDE BARU</button>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="action-area">
+
+      <!-- Row 1: Input Skor + Edit Nama -->
+      <div class="action-row action-row-2">
+        <button class="btn btn-gold" id="btn-input-skor">
+          ✏️ INPUT SKOR
+        </button>
+        <button class="btn btn-outline" id="btn-edit-name">
+          ✏️ EDIT NAMA
+        </button>
+      </div>
+
+      <!-- Row 2: Undo + Reset -->
+      <div class="action-row action-row-2">
+        <button class="btn btn-undo" id="btn-undo">
+          ↩️ UNDO
+        </button>
+        <button class="btn btn-reset-game" style="margin-top:0;" id="btn-reset-game">
+          🗑️ RESET GAME
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="ranking">🏆 Ranking</button>
+      <button class="tab-btn" data-tab="history">📋 History</button>
+      <button class="tab-btn" data-tab="achievement">🎖️ Achievement</button>
+      <button class="tab-btn" data-tab="statistik">📊 Statistik</button>
+      <button class="tab-btn" data-tab="arsip">🗄️ Arsip</button>
+      <button class="tab-btn" data-tab="grafik">📈 Grafik</button>
+    </div>
+
+    <!-- Tab Contents -->
+    <div id="tab-ranking" class="tab-content active">
+      <div id="ranking-list"></div>
+    </div>
+
+    <div id="tab-history" class="tab-content">
+      <div id="history-list"></div>
+    </div>
+
+    <div id="tab-achievement" class="tab-content">
+      <div class="achievement-grid" id="achievement-grid"></div>
+    </div>
+
+    <div id="tab-statistik" class="tab-content">
+      <div id="statistik-list"></div>
+    </div>
+
+    <div id="tab-arsip" class="tab-content">
+      <div id="archive-list"></div>
+    </div>
+
+    <div id="tab-grafik" class="tab-content">
+      <div class="chart-wrap">
+        <div class="chart-title">📈 Grafik Perkembangan Skor</div>
+        <canvas id="score-chart"></canvas>
+        <div class="chart-legend" id="chart-legend"></div>
+      </div>
+    </div>
+
+    <!-- Bottom spacer -->
+    <div style="height:40px;"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- NEW ROUND SCREEN -->
+  <!-- ============================================================ -->
+  <div id="newround-screen" class="screen">
+    <div id="new-round-content" style="padding:16px;"></div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- ============================================================ -->
+<!-- SCORE INPUT MODAL -->
+<!-- ============================================================ -->
+<div id="score-input-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="position:relative;">
+    <div class="modal-title">✏️ INPUT SKOR PUTERAN</div>
+    <button class="modal-close" id="btn-close-score-modal">✕</button>
+    <div id="score-input-form"></div>
+    <div style="margin-top:16px;">
+      <button class="btn btn-gold" style="width:100%;padding:14px;font-size:14px;" id="btn-simpan-skor">
+        💾 SIMPAN PUTERAN
+      </button>
+    </div>
+    <div style="margin-top:8px;">
+      <button class="btn btn-undo" style="width:100%;" onclick="closeScoreInputModal()">
+        ✕ BATAL
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- EDIT NAME MODAL -->
+<!-- ============================================================ -->
+<div id="edit-name-modal" class="modal-overlay hidden">
+  <div class="modal-sheet" style="position:relative;">
+    <div class="modal-title">✏️ EDIT NAMA PEMAIN</div>
+    <button class="modal-close" id="btn-close-edit-name">✕</button>
+    <div id="edit-name-form-inner"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;">
+      <button class="btn btn-gold" style="flex:1;padding:12px;" id="btn-save-edit-name">💾 SIMPAN</button>
+      <button class="btn btn-undo" style="flex:1;padding:12px;" onclick="closeEditName()">✕ BATAL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- RESET CONFIRM POPUP -->
+<!-- ============================================================ -->
+<div id="reset-popup" class="popup-overlay hidden">
+  <div class="popup-box">
+    <div style="font-size:36px;margin-bottom:10px;">🗑️</div>
+    <div class="popup-title">Reset Permainan?</div>
+    <div class="popup-text">
+      Ini akan menghapus skor, ronde, dan history aktif.<br>
+      <strong style="color:var(--gold);">Statistik, bintang, dan arsip pemain akan tetap tersimpan.</strong>
+    </div>
+    <div class="popup-actions">
+      <button class="popup-btn popup-btn-cancel" id="reset-popup-cancel">❌ Batal</button>
+      <button class="popup-btn popup-btn-confirm" id="reset-popup-confirm">✅ Reset</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
